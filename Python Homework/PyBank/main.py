@@ -1,26 +1,58 @@
-import csv 
+import csv
 import os
 
-#csv file
-with open("Resources/budget_data.csv") as file:
-    #print(file.read())
-  
-    reader = csv.reader(file)
-    header = next(reader)
-    
-    total_months = 0
-    net_total_losses = 0
-    
-    #read header row
-    for row in reader: 
+date = []
+money = []
+
+sum_total = 0
+
+pybank = os.path.join('..', 'Resources', 'budget_data.csv')
+
+with open("pybank", newline = '') as csvfile:
+    csvreader = csv.reader(csvfile, delimiter = ',')
+    for row in csvreader:
         print(row)
-        total_months = total_months + 1
+
+next(csvreader, None)
+#for loop through data, appends lists, and increases counters
+for row in csvreader:
+        date.append(row[0])
+        money.append(int(row[1]))
+        sum_total += float(row[1])
+        #print(row)
+
+#total months
+months = len(date)
+
+#loops through money indices and compares to find greates increase and decrease 
+increase=money[0]
+decrease=money[0]
+
+for i in range(len(money)):
+    if money[i] >= increase:
+        increase = money[i]
+        increase_month = date[i]
+    elif money[i] <= decrease:
+        decrease = money[i]
+        decrease_month = date[i]
+    else:
+        print('Increase/Decrease Error')
         
-        net_total_losses = net_total_losses + int(row[1])
-        
-    print(total_months)
-    print(net_total_losses)
-    
+#Average Profit/Loss Change
+avg_money = round(sum_total/months, 2)
+
+#Output file and print statments
+with open('output_financial.txt',"w",newline = '') as textfile:
+    print("Financial Analysis", file = textfile)
+    print("-----------------------------------", file = textfile)
+    print(f'Total Months: {months}', file = textfile)
+    print(f'Total Revenue: ${sum_total}',file = textfile)
+    print(f'Average Profit/Loss Change: ${avg_money}',file = textfile)
+    print(f'Greatest Increase Profit/Loss: {increase_month}(${increase})',file = textfile)
+    print(f'Greatest Decrease Profit/Loss: {decrease_month}(${decrease})',file = textfile)
+    print("-----------------------------------", file = textfile)
+
+
     
     
     
